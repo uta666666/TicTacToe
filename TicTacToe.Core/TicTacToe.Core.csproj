@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LivetCask.NetCore" Version="2.0.0-pre3" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0455" />
+    <PackageReference Include="MaterialDesignThemes" Version="3.0.0-ci460" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.1-ci460" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="ReactiveProperty" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Converters\" />
+  </ItemGroup>
+
+</Project>
