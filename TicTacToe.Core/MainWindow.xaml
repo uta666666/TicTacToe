@@ -3,13 +3,17 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:be="clr-namespace:TicTacToe.Core.Behavior"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:TicTacToe.Core"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:qc="http://QuickConverter.CodePlex.com/"
     xmlns:vm="clr-namespace:TicTacToe.Core.ViewModels"
     Title="MainWindow"
     Width="800"
-    Height="820"
+    Height="900"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     ResizeMode="CanMinimize"
@@ -24,150 +28,267 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <Grid Width="780" Height="780">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Command="{Binding ResetCommand}" Content="リセット" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
-        </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" Grid.Column="0">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_1_1.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="0:0" />
-        </Border>
-        <Border Grid.Row="0" Grid.Column="1">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_1_2.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="0:1" />
-        </Border>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <ToggleButton
+                    Width="60"
+                    Height="60"
+                    VerticalAlignment="Center"
+                    Content="○"
+                    FontSize="20"
+                    IsChecked="{Binding IsFirstPlayer.Value, Mode=OneWay}"
+                    Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                    <i:Interaction.Behaviors>
+                        <be:ToggleButtonCommandBehavior CheckedCommand="{Binding ChangePlayerCommand}" IsFirst="True" />
+                    </i:Interaction.Behaviors>
+                    <!--
+                        CheckBox
+                        Width="235"
+                        Height="28"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Top"
+                        Content="○　（先攻）"
+                        FontSize="20"
+                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                        IsChecked="{Binding IsFirstPlayer.Value}" />
+                    -->
+                </ToggleButton>
+                <TextBlock
+                    Margin="10"
+                    VerticalAlignment="Center"
+                    FontSize="20"
+                    Foreground="{StaticResource PrimaryHueMidBrush}">
+                    （先攻）
+                </TextBlock>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <ToggleButton
+                    Width="60"
+                    Height="60"
+                    VerticalAlignment="Center"
+                    Content="✕"
+                    IsChecked="{qc:Binding '!$P',
+                                           P={Binding IsFirstPlayer.Value,
+                                                      Mode=OneWay}}"
+                    Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}">
+                    <i:Interaction.Behaviors>
+                        <be:ToggleButtonCommandBehavior CheckedCommand="{Binding ChangePlayerCommand}" IsFirst="False" />
+                    </i:Interaction.Behaviors>
+                    <!--<CheckBox
+                    Width="235"
+                    Height="28"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Top"
+                    Content="✕　（後攻）"
+                    FontSize="20"
+                    Foreground="{StaticResource PrimaryHueMidBrush}"
+                    IsChecked="{qc:Binding '!$P',
+                                           P={Binding IsFirstPlayer.Value,
+                                                      Mode=TwoWay}}" />-->
+                </ToggleButton>
+                <TextBlock
+                    Margin="10"
+                    VerticalAlignment="Center"
+                    FontSize="20"
+                    Foreground="{StaticResource PrimaryHueMidBrush}">
+                    （後攻）
+                </TextBlock>
+            </StackPanel>
+        </Grid>
 
-        <Border Grid.Row="0" Grid.Column="2">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_1_3.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="0:2" />
-        </Border>
+        <Grid
+            Grid.Row="1"
+            Width="780"
+            Height="780"
+            Margin="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="1" Grid.Column="0">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_2_1.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="1:0" />
-        </Border>
+            <Border Grid.Row="0" Grid.Column="0">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_1_1_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_1_1.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_1_1_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="0:0" />
+            </Border>
+            <Border Grid.Row="0" Grid.Column="1">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_1_2_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_1_2.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_1_2_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="0:1" />
+            </Border>
 
-        <Border Grid.Row="1" Grid.Column="1">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_2_2.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="1:1" />
-        </Border>
+            <Border Grid.Row="0" Grid.Column="2">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_1_3_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_1_3.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_1_3_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="0:2" />
+            </Border>
 
-        <Border Grid.Row="1" Grid.Column="2">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_2_3.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="1:2" />
-        </Border>
+            <Border Grid.Row="1" Grid.Column="0">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_2_1_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_2_1.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_2_1_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="1:0" />
+            </Border>
 
-        <Border Grid.Row="2" Grid.Column="0">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_3_1.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="2:0" />
-        </Border>
+            <Border Grid.Row="1" Grid.Column="1">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_2_2_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_2_2.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_2_2_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="1:1" />
+            </Border>
 
-        <Border Grid.Row="2" Grid.Column="1">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_3_2.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="2:1" />
-        </Border>
+            <Border Grid.Row="1" Grid.Column="2">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_2_3_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_2_3.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_2_3_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="1:2" />
+            </Border>
 
-        <Border Grid.Row="2" Grid.Column="2">
-            <Button
-                Width="Auto"
-                Height="Auto"
-                MinWidth="256"
-                MinHeight="256"
-                Margin="2"
-                Command="{Binding CellClickCommand}"
-                CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
-                Content="{Binding Cell_3_3.Value}"
-                FontSize="150"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Tag="2:2" />
-        </Border>
+            <Border Grid.Row="2" Grid.Column="0">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_3_1_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_3_1.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_3_1_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="2:0" />
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="1">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_3_2_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_3_2.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_3_2_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="2:1" />
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="2">
+                <Button
+                    Width="Auto"
+                    Height="Auto"
+                    MinWidth="256"
+                    MinHeight="256"
+                    Margin="2"
+                    Background="{Binding Cell_3_3_Background.Value}"
+                    Command="{Binding CellClickCommand}"
+                    CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding Cell_3_3.Value}"
+                    FontSize="150"
+                    Foreground="{Binding Cell_3_3_Foreground.Value}"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Tag="2:2" />
+            </Border>
+        </Grid>
     </Grid>
 </Controls:MetroWindow>

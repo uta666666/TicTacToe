@@ -11,16 +11,28 @@ namespace TicTacToe.Core.Models
         public Board()
         {
             Cells = new Cell[3, 3];
+            Reset();
+        }
+
+        public void Reset()
+        {
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Cells[i, j] = new Cell();
+                    if (Cells[i, j] == null)
+                    {
+                        Cells[i, j] = new Cell();
+                    }
+                    else
+                    {
+                        Cells[i, j].ResetCell();
+                    }
                 }
             }
         }
 
-        public Cell[,] Cells;
+        public Cell[,] Cells { get; set; }
 
         public void SetCellType(int rowIndex, int colIndex, CellType type)
         {
@@ -46,166 +58,199 @@ namespace TicTacToe.Core.Models
             }
         }
 
-        public bool CheckReach(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
+        public ICheckGameStatusResult CheckGameStatus(CellType type)
         {
-            spaceRowIndex = null;
-            spaceColIndex = null;
-
-            if (CheckReachRow(type, out spaceRowIndex, out spaceColIndex))
-            {
-                return true;
-            }
-            if (CheckReachColumn(type, out spaceRowIndex, out spaceColIndex))
-            {
-                return true;
-            }
-            if (CheckReachCross(type, out spaceRowIndex, out spaceColIndex))
-            {
-                return true;
-            }
-            return false;
+            return Cells.GetGameStatus(type);
         }
 
-        private bool CheckReachRow(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
+        public void ChangeCellColorForWin(List<Point> cells)
         {
-            spaceRowIndex = null;
-            spaceColIndex = null;
+            foreach (var cell in cells)
+            {
+                Cells[(int)cell.Y, (int)cell.X].ChangeCellColor();
+            }
+        }
 
+        public Board Clone()
+        {
+            var cloneBoard = new Board();
+            cloneBoard.Cells = new Cell[3, 3];
             for (int i = 0; i < 3; i++)
             {
-                spaceRowIndex = null;
-                spaceColIndex = null;
-                int count = 0;
                 for (int j = 0; j < 3; j++)
                 {
-                    if (Cells[i, j].Type == type)
+                    cloneBoard.Cells[i, j] = new Cell()
                     {
-                        count++;
-                    }
-                    else if (Cells[i, j].Type == CellType.None)
-                    {
-                        spaceRowIndex = i;
-                        spaceColIndex = j;
-                    }
-                }
-                if (count >= 2)
-                {
-                    return true;
+                        Type = Cells[i, j].Type
+                    };
                 }
             }
-            return false;
+            return cloneBoard;
         }
 
-        private bool CheckReachColumn(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
-        {
-            spaceRowIndex = null;
-            spaceColIndex = null;
-
-            for (int i = 0; i < 3; i++)
-            {
-                spaceRowIndex = null;
-                spaceColIndex = null;
-                int count = 0;
-                for (int j = 0; j < 3; j++)
-                {
-                    if (Cells[j, i].Type == type)
-                    {
-                        count++;
-                    }
-                    else if (Cells[i, j].Type == CellType.None)
-                    {
-                        spaceRowIndex = i;
-                        spaceColIndex = j;
-                    }
-                }
-                if (count >= 2)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool CheckReachCross(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
-        {
-            spaceRowIndex = null;
-            spaceColIndex = null;
-            int count = 0;
-            if (Cells[0, 0].Type == type)
-            {
-                count++;
-            }
-            else if (Cells[0, 0].Type == CellType.None)
-            {
-                spaceRowIndex = 0;
-                spaceColIndex = 0;
-            }
-
-            if (Cells[1, 1].Type == type)
-            {
-                count++;
-            }
-            else if (Cells[1, 1].Type == CellType.None)
-            {
-                spaceRowIndex = 1;
-                spaceColIndex = 1;
-            }
-
-            if (Cells[2, 2].Type == type)
-            {
-                count++;
-            }
-            else if (Cells[2, 2].Type == CellType.None)
-            {
-                spaceRowIndex = 2;
-                spaceColIndex = 2;
-            }
-
-            if (count >= 2)
-            {
-                return true;
-            }
 
 
-            spaceRowIndex = null;
-            spaceColIndex = null;
-            count = 0;
-            if (Cells[0, 2].Type == type)
-            {
-                count++;
-            }
-            else if (Cells[0, 2].Type == CellType.None)
-            {
-                spaceRowIndex = 0;
-                spaceColIndex = 2;
-            }
+        //public bool CheckReach(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
+        //{
+        //    spaceRowIndex = null;
+        //    spaceColIndex = null;
 
-            if (Cells[1, 1].Type == type)
-            {
-                count++;
-            }
-            else if (Cells[1, 1].Type == CellType.None)
-            {
-                spaceRowIndex = 1;
-                spaceColIndex = 1;
-            }
+        //    if (CheckReachRow(type, out spaceRowIndex, out spaceColIndex))
+        //    {
+        //        return true;
+        //    }
+        //    if (CheckReachColumn(type, out spaceRowIndex, out spaceColIndex))
+        //    {
+        //        return true;
+        //    }
+        //    if (CheckReachCross(type, out spaceRowIndex, out spaceColIndex))
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-            if (Cells[2, 0].Type == type)
-            {
-                count++;
-            }
-            else if (Cells[2, 0].Type == CellType.None)
-            {
-                spaceRowIndex = 2;
-                spaceColIndex = 0;
-            }
+        //private bool CheckReachRow(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
+        //{
+        //    spaceRowIndex = null;
+        //    spaceColIndex = null;
 
-            if (count >= 2)
-            {
-                return true;
-            }
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        spaceRowIndex = null;
+        //        spaceColIndex = null;
+        //        int count = 0;
+        //        for (int j = 0; j < 3; j++)
+        //        {
+        //            if (Cells[i, j].Type == type)
+        //            {
+        //                count++;
+        //            }
+        //            else if (Cells[i, j].Type == CellType.None)
+        //            {
+        //                spaceRowIndex = i;
+        //                spaceColIndex = j;
+        //            }
+        //        }
+        //        if (count >= 2)
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
-            return false;
-        }
+        //private bool CheckReachColumn(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
+        //{
+        //    spaceRowIndex = null;
+        //    spaceColIndex = null;
+
+        //    for (int i = 0; i < 3; i++)
+        //    {
+        //        spaceRowIndex = null;
+        //        spaceColIndex = null;
+        //        int count = 0;
+        //        for (int j = 0; j < 3; j++)
+        //        {
+        //            if (Cells[j, i].Type == type)
+        //            {
+        //                count++;
+        //            }
+        //            else if (Cells[i, j].Type == CellType.None)
+        //            {
+        //                spaceRowIndex = i;
+        //                spaceColIndex = j;
+        //            }
+        //        }
+        //        if (count >= 2)
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
+
+        //private bool CheckReachCross(CellType type, out int? spaceRowIndex, out int? spaceColIndex)
+        //{
+        //    spaceRowIndex = null;
+        //    spaceColIndex = null;
+        //    int count = 0;
+        //    if (Cells[0, 0].Type == type)
+        //    {
+        //        count++;
+        //    }
+        //    else if (Cells[0, 0].Type == CellType.None)
+        //    {
+        //        spaceRowIndex = 0;
+        //        spaceColIndex = 0;
+        //    }
+
+        //    if (Cells[1, 1].Type == type)
+        //    {
+        //        count++;
+        //    }
+        //    else if (Cells[1, 1].Type == CellType.None)
+        //    {
+        //        spaceRowIndex = 1;
+        //        spaceColIndex = 1;
+        //    }
+
+        //    if (Cells[2, 2].Type == type)
+        //    {
+        //        count++;
+        //    }
+        //    else if (Cells[2, 2].Type == CellType.None)
+        //    {
+        //        spaceRowIndex = 2;
+        //        spaceColIndex = 2;
+        //    }
+
+        //    if (count >= 2)
+        //    {
+        //        return true;
+        //    }
+
+
+        //    spaceRowIndex = null;
+        //    spaceColIndex = null;
+        //    count = 0;
+        //    if (Cells[0, 2].Type == type)
+        //    {
+        //        count++;
+        //    }
+        //    else if (Cells[0, 2].Type == CellType.None)
+        //    {
+        //        spaceRowIndex = 0;
+        //        spaceColIndex = 2;
+        //    }
+
+        //    if (Cells[1, 1].Type == type)
+        //    {
+        //        count++;
+        //    }
+        //    else if (Cells[1, 1].Type == CellType.None)
+        //    {
+        //        spaceRowIndex = 1;
+        //        spaceColIndex = 1;
+        //    }
+
+        //    if (Cells[2, 0].Type == type)
+        //    {
+        //        count++;
+        //    }
+        //    else if (Cells[2, 0].Type == CellType.None)
+        //    {
+        //        spaceRowIndex = 2;
+        //        spaceColIndex = 0;
+        //    }
+
+        //    if (count >= 2)
+        //    {
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
+
     }
 }

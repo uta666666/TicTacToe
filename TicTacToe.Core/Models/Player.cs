@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using TicTacToe.Core.Commons;
 
 namespace TicTacToe.Core.Models
@@ -34,30 +35,74 @@ namespace TicTacToe.Core.Models
 
         public bool IsCPU { get; set; }
 
-        public void SelectCell(int rowIndex, int colIndex)
+        private bool _isWin;
+        public bool IsWin {
+            get {
+                return _isWin;
+            }
+            set {
+                if (_isWin == value)
+                {
+                    return;
+                }
+                SetProperty(ref _isWin, value);
+            }
+        }
+
+        public bool SelectCell(int rowIndex, int colIndex)
         {
             Board.SetCellType(rowIndex, colIndex, _type);
+            var resultSelf = Board.CheckGameStatus(_type);
+            if (resultSelf.Status == GameStatus.Settlement)
+            {
+                Board.ChangeCellColorForWin((resultSelf as SettlementResult).SettlementCells);
+                IsWin = true;
+                return true;
+            }
+            return false;
         }
 
-        public void SelectCell()
+        public bool SelectCell()
         {
-            int? spaceRowIndex;
-            int? spaceColIndex;
-
-            if (CheckNonSelfReach(out spaceRowIndex, out spaceColIndex))
+            var resultSelf = Board.CheckGameStatus(_type);
+            if (resultSelf.Status == GameStatus.Reach)
             {
-                SelectCell(spaceRowIndex.Value, spaceColIndex.Value);
-                return;
+                var p = (resultSelf as ReachResult).ReachCells.Select(GetCellSelector());
+                if (p.HasValue)
+                {
+                    return SelectCell((int)p.Value.Y, (int)p.Value.X);
+                }
+                return true;
             }
 
-            var emptyCells = Board.GetEmptyCells().ToList();
-            Random r = new Random();
-            var randomIndex = r.Next(0, emptyCells.Count - 1);
-            SelectCell((int)emptyCells[randomIndex].Y, (int)emptyCells[randomIndex].X);
+            var resultNonSelf = Board.CheckGameStatus(_nonSelfType);
+            if (resultNonSelf.Status == GameStatus.Reach)
+            {
+                var p = (resultNonSelf as ReachResult).ReachCells.Select(GetCellSelector());
+                if (p.HasValue)
+                {
+                    return SelectCell((int)p.Value.Y, (int)p.Value.X);
+                }
+                return true;
+            }
+
+            if (resultSelf.Status == GameStatus.None &&
+                resultNonSelf.Status == GameStatus.None)
+            {
+                var p = Board.GetEmptyCells().Select(GetCellSelector());
+                if (p.HasValue)
+                {
+                    return SelectCell((int)p.Value.Y, (int)p.Value.X);
+                }
+                return true;
+            }
+
+            throw new NotImplementedException("ありえない。実装ミス？");
         }
 
-        private bool CheckNonSelfReach(out int? spaceRowIndex, out int? spaceColIndex) {
-            return Board.CheckReach(_nonSelfType, out spaceRowIndex, out spaceColIndex);
+        private ICellSelector GetCellSelector()
+        {
+            return new WeightCellSelector(Board, _type);
         }
     }
 }

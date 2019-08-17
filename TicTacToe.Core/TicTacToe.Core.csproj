@@ -7,16 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Converters\**" />
+    <EmbeddedResource Remove="Converters\**" />
+    <None Remove="Converters\**" />
+    <Page Remove="Converters\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LivetCask.NetCore" Version="2.0.0-pre3" />
     <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0455" />
     <PackageReference Include="MaterialDesignThemes" Version="3.0.0-ci460" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.1-ci460" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="QuickConverter" Version="1.2.5" />
     <PackageReference Include="ReactiveProperty" Version="6.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Converters\" />
   </ItemGroup>
 
 </Project>
