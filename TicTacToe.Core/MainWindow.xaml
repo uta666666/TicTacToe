@@ -11,7 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:qc="http://QuickConverter.CodePlex.com/"
     xmlns:vm="clr-namespace:TicTacToe.Core.ViewModels"
-    Title="MainWindow"
+    Title="Tic-Tac-Toe"
     Width="800"
     Height="900"
     Background="{DynamicResource MaterialDesignPaper}"
@@ -28,17 +28,48 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <Controls:MetroWindow.RightWindowCommands>
+    <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
-            <Button Command="{Binding ResetCommand}" Content="リセット" />
+            <Button
+                Margin="10,0,10,0"
+                Command="{Binding ResetCommand}"
+                Content="リセット" />
         </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+    </Controls:MetroWindow.LeftWindowCommands>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
+        <!--<Line
+            Grid.Row="1"
+            Panel.ZIndex="99"
+            Stroke="Tomato"
+            StrokeThickness="60"
+            Visibility="Visible"
+            X1="45"
+            X2="760"
+            Y1="35"
+            Y2="750">
+
+            <Line.Triggers>
+                <Trigger x:Name="a" Property="Visibility" Value="Visible">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="X2"
+                                    To="760"
+                                    Duration="10" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+            </Line.Triggers>
+
+        </Line>-->
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
