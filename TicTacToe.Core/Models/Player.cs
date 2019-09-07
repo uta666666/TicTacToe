@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using TicTacToe.Core.Commons;
 
@@ -12,24 +13,10 @@ namespace TicTacToe.Core.Models
         public Player(CellType type)
         {
             Board = new Board();
-            _type = type;
-
-            if (_type == CellType.Circle)
-            {
-                _nonSelfType = CellType.Cross;
-            }
-            else if (_type == CellType.Cross)
-            {
-                _nonSelfType = CellType.Circle;
-            }
-            else
-            {
-                _nonSelfType = CellType.None;
-            }
+            _selfType = type;
         }
 
-        private CellType _type;
-        private CellType _nonSelfType;
+        private CellType _selfType;
 
         public Board Board { get; set; }
 
@@ -49,60 +36,77 @@ namespace TicTacToe.Core.Models
             }
         }
 
+        private SettledPattern _settledPattern;
+        public SettledPattern SettledPattern {
+            get {
+                return _settledPattern;
+            }
+            set {
+                if (_settledPattern == value)
+                {
+                    return;
+                }
+                SetProperty(ref _settledPattern, value);
+            }
+        }
+
+        /// <summary>
+        /// セルを選択（プレイヤー、CPU共通）
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        /// <param name="colIndex"></param>
+        /// <returns>true:勝負あり　false:継続中</returns>
         public bool SelectCell(int rowIndex, int colIndex)
         {
-            Board.SetCellType(rowIndex, colIndex, _type);
-            var resultSelf = Board.CheckGameStatus(_type);
-            if (resultSelf.Status == GameStatus.Settlement)
+            Board.SetCellType(rowIndex, colIndex, _selfType);
+            var resultSelf = Board.CheckGameStatus(_selfType);
+            if (resultSelf.Status == GameStatusByUser.Settlement)
             {
-                Board.ChangeCellColorForWin((resultSelf as SettlementResult).SettlementCells);
+                var settlementResult = (resultSelf as SettlementResult);
+                Board.ChangeCellColorForWin(settlementResult);
                 IsWin = true;
+                //SettledPattern = settlementResult.SettlementPattern;
                 return true;
             }
             return false;
         }
 
-        public bool SelectCell()
+        /// <summary>
+        /// セルを選択（CPU）
+        /// </summary>
+        /// <returns>true:勝負あり　false:継続中</returns>
+        public async Task<bool> SelectCellAutoAsync()
         {
-            var resultSelf = Board.CheckGameStatus(_type);
-            if (resultSelf.Status == GameStatus.Reach)
+            //セルを探す
+            var p = await CallSelectorAsync(GetCellSelector(), Board.GetEmptyCells());
+            //var p = await Board.GetEmptyCells().SelectAsync(GetCellSelector());
+            if (p.HasValue)
             {
-                var p = (resultSelf as ReachResult).ReachCells.Select(GetCellSelector());
-                if (p.HasValue)
-                {
-                    return SelectCell((int)p.Value.Y, (int)p.Value.X);
-                }
-                return true;
+                return SelectCell((int)p.Value.Y, (int)p.Value.X);
             }
-
-            var resultNonSelf = Board.CheckGameStatus(_nonSelfType);
-            if (resultNonSelf.Status == GameStatus.Reach)
-            {
-                var p = (resultNonSelf as ReachResult).ReachCells.Select(GetCellSelector());
-                if (p.HasValue)
-                {
-                    return SelectCell((int)p.Value.Y, (int)p.Value.X);
-                }
-                return true;
-            }
-
-            if (resultSelf.Status == GameStatus.None &&
-                resultNonSelf.Status == GameStatus.None)
-            {
-                var p = Board.GetEmptyCells().Select(GetCellSelector());
-                if (p.HasValue)
-                {
-                    return SelectCell((int)p.Value.Y, (int)p.Value.X);
-                }
-                return true;
-            }
-
-            throw new NotImplementedException("ありえない。実装ミス？");
+            //見つからないときは勝負あり
+            return true;
         }
 
+        private async Task<Point?> CallSelectorAsync(ICellSelector selector, IEnumerable<Point> cells)
+        {
+            if (!cells.Any())
+            {
+                return null;
+            }
+            return await selector.SelectAsync(cells);
+        }
+
+
+        private MinMaxFunctionSelector _minMaxSelector;
         private ICellSelector GetCellSelector()
         {
-            return new WeightCellSelector(Board, _type);
+            //return new WeightCellSelector(Board, _type);
+            if (_minMaxSelector == null)
+            {
+                _minMaxSelector = new MinMaxFunctionSelector(Board, _selfType, true);
+            }
+            return _minMaxSelector;
         }
     }
 }

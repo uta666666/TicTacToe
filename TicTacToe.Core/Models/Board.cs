@@ -6,7 +6,7 @@ using TicTacToe.Core.Commons;
 
 namespace TicTacToe.Core.Models
 {
-    public class Board
+    public class Board : BindableBase
     {
         public Board()
         {
@@ -30,13 +30,32 @@ namespace TicTacToe.Core.Models
                     }
                 }
             }
+            SettledPattern = SettledPattern.None;
         }
 
         public Cell[,] Cells { get; set; }
 
+
+        private SettledPattern _settledPattern;
+        public SettledPattern SettledPattern {
+            get {
+                return _settledPattern;
+            }
+            set {
+                SetProperty(ref _settledPattern, value);
+            }
+        }
+
+
+
         public void SetCellType(int rowIndex, int colIndex, CellType type)
         {
             Cells[rowIndex, colIndex].Type = type;
+        }
+
+        public void Undo(int rowIndex, int colIndex)
+        {
+            Cells[rowIndex, colIndex].Type = CellType.None;
         }
 
         public IEnumerable<Point> GetEmptyCells()
@@ -58,17 +77,37 @@ namespace TicTacToe.Core.Models
             }
         }
 
+        public CellType GetWinner()
+        {
+            GameStatus status;
+            SettledPattern pattern;
+            Cells.GetGameStatus(out status, out pattern);
+            if (status == GameStatus.Win_Circle)
+            {
+                return CellType.Circle;
+            }
+            else if (status == GameStatus.Win_Cross)
+            {
+                return CellType.Cross;
+            }
+            else
+            {
+                return CellType.None;
+            }
+        }
+
         public ICheckGameStatusResult CheckGameStatus(CellType type)
         {
             return Cells.GetGameStatus(type);
         }
 
-        public void ChangeCellColorForWin(List<Point> cells)
+        public void ChangeCellColorForWin(SettlementResult result)
         {
-            foreach (var cell in cells)
-            {
-                Cells[(int)cell.Y, (int)cell.X].ChangeCellColor();
-            }
+            //foreach (var cell in result.SettlementCells)
+            //{
+            //    Cells[(int)cell.Y, (int)cell.X].ChangeCellColor();
+            //}
+            SettledPattern = result.SettlementPattern;
         }
 
         public Board Clone()

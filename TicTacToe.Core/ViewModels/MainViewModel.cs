@@ -7,6 +7,7 @@ using System.Text;
 using TicTacToe.Core.Commons;
 using TicTacToe.Core.Models;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace TicTacToe.Core.ViewModels
 {
@@ -79,77 +80,111 @@ namespace TicTacToe.Core.ViewModels
             IsWinPlayer1 = _player1.ObserveProperty(p => p.IsWin).ToReactiveProperty();
             IsWinPlayer2 = _player2.ObserveProperty(p => p.IsWin).ToReactiveProperty();
             IsSettled = IsWinPlayer1.CombineLatest(IsWinPlayer2, (x, y) => x || y).ToReadOnlyReactiveProperty();
-            IsFirstPlayer.PropertyChanged += IsSettled_PropertyChanged;
-        }
+            IsSettledCL = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.CrossLeft).ToReactiveProperty();
+            IsSettledCR = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.CrossRight).ToReactiveProperty();
+            IsSettledVL = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.VerticalLeft).ToReactiveProperty();
+            IsSettledVC = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.VerticalCenter).ToReactiveProperty();
+            IsSettledVR = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.VerticalRight).ToReactiveProperty();
+            IsSettledHT = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.HorizontalTop).ToReactiveProperty();
+            IsSettledHM = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.HorizontalMiddle).ToReactiveProperty();
+            IsSettledHB = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == Commons.SettledPattern.HorizontalBottom).ToReactiveProperty();
+            //IsSettledCL = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.CrossLeft)).ToReadOnlyReactiveProperty();
+            //IsSettledCR = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.CrossRight)).ToReadOnlyReactiveProperty();
+            //IsSettledVL = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.VerticalLeft)).ToReadOnlyReactiveProperty();
+            //IsSettledVC = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.VerticalCenter)).ToReadOnlyReactiveProperty();
+            //IsSettledVR = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.VerticalRight)).ToReadOnlyReactiveProperty();
+            //IsSettledHT = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.HorizontalTop)).ToReadOnlyReactiveProperty();
+            //IsSettledHM = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.HorizontalMiddle)).ToReadOnlyReactiveProperty();
+            //IsSettledHB = IsSettled.CombineLatest(SettledPattern, (x, y) => x && (y == Commons.SettledPattern.HorizontalBottom)).ToReadOnlyReactiveProperty();
 
-        private void IsSettled_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            ;
-            //if (IsSettled.Value)
-            //{
-
-            //    Cell_1_1_Background.Value = (Brush)App.Current.Resources["PrimaryHueBrush"];
-            //    Cell_1_1_Foreground.Value = (Brush)App.Current.Resources["PrimaryHueForegroundBrush"];
-            //}
+            IsThinking = new ReactiveProperty<bool>(false);
         }
 
         private void CreateCommand()
         {
             CreateResetCommand();
-            CreateCellCilckCommand();
             CreateChangePlayerCommand();
+            CreateCellCilckCommand();
         }
 
+        /// <summary>
+        /// リセットコマンド
+        /// </summary>
         private void CreateResetCommand()
         {
             ResetCommand = new ReactiveCommand();
-            ResetCommand.Subscribe(() =>
+            ResetCommand.Subscribe(async () =>
             {
                 _board.Reset();
                 _isFirstPlayerTurn = true;
+                _player1.IsWin = false;
+                _player2.IsWin = false;
 
-                SelectCellForCPU();
+                await SelectCellForCPUAsync();
             });
         }
 
+        /// <summary>
+        /// 先攻・後攻切り替え
+        /// </summary>
         private void CreateChangePlayerCommand()
         {
-            ChangePlayerCommand = new ReactiveCommand<bool>();
-            ChangePlayerCommand.Subscribe((isFirst) =>
+            SelectPlayerCommand = new ReactiveCommand<bool>();
+            SelectPlayerCommand.Subscribe(async (isFirstPlayer) =>
             {
+                if (IsFirstPlayer.Value == isFirstPlayer)
+                {
+                    return;
+                }
+
                 _board.Reset();
                 _isFirstPlayerTurn = true;
+                _player1.IsWin = false;
+                _player2.IsWin = false;
 
-                IsFirstPlayer.Value = isFirst;
-                _player1.IsCPU = !isFirst;
-                _player2.IsCPU = isFirst;
+                IsFirstPlayer.Value = isFirstPlayer;
+                _player1.IsCPU = !isFirstPlayer;
+                _player2.IsCPU = isFirstPlayer;
 
-                SelectCellForCPU();
+                await SelectCellForCPUAsync();
             });
         }
 
+        /// <summary>
+        /// セル選択
+        /// </summary>
         private void CreateCellCilckCommand()
         {
             CellClickCommand = new ReactiveCommand<string>();
-            CellClickCommand.Subscribe((tag) =>
+            CellClickCommand.Subscribe(async (tag) =>
             {
+                if (IsSettled.Value)
+                {
+                    return;
+                }
+                if (IsThinking.Value)
+                {
+                    return;
+                }
+
                 int rowIndex;
                 int colIndex;
                 if (!TryGetPos(tag, out rowIndex, out colIndex))
                 {
                     return;
                 }
-
+                //すでに選択済みの場所はダメ
                 if (_board.Cells[rowIndex, colIndex].Type != CellType.None)
                 {
                     return;
                 }
-
+                //選択して決着がついた窯で確認
                 if (CurrentPlayer.SelectCell(rowIndex, colIndex))
                 {
                     return;
                 }
-                ChangePlayer();
+                //決着がついてないときは次のプレイヤーへ
+                await ChangePlayerAsync();
             });
         }
 
@@ -174,27 +209,46 @@ namespace TicTacToe.Core.ViewModels
             return true;
         }
 
-        private void ChangePlayer()
+        private async Task ChangePlayerAsync()
         {
             _isFirstPlayerTurn = !_isFirstPlayerTurn;
 
-            SelectCellForCPU();
+            await SelectCellForCPUAsync();
         }
 
-        private void SelectCellForCPU()
+        private async Task SelectCellForCPUAsync()
         {
             if (CurrentPlayer.IsCPU)
             {
-                if (CurrentPlayer.SelectCell())
+                //IsThinking.Value = true;
+                var t = StartThinking();
+                try
                 {
-                    return;
+                    if (await CurrentPlayer.SelectCellAutoAsync())
+                    {
+                        return;
+                    }
+                    await ChangePlayerAsync();
                 }
-                ChangePlayer();
+                finally
+                {
+                    await t;
+                    IsThinking.Value = false;
+                }
             }
         }
 
+        private Task StartThinking()
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                IsThinking.Value = true;
+            });
+        }
 
-        public ReactiveCommand<bool> ChangePlayerCommand { get; private set; }
+
+        public ReactiveCommand<bool> SelectPlayerCommand { get; private set; }
         public ReactiveCommand<string> CellClickCommand { get; private set; }
         public ReactiveCommand ResetCommand { get; private set; }
 
@@ -230,6 +284,18 @@ namespace TicTacToe.Core.ViewModels
         public ReactiveProperty<bool> IsFirstPlayer { get; set; }
         public ReactiveProperty<bool> IsWinPlayer1 { get; set; }
         public ReactiveProperty<bool> IsWinPlayer2 { get; set; }
+
         public ReadOnlyReactiveProperty<bool> IsSettled { get; set; }
+        public ReactiveProperty<bool> IsSettledCL { get; set; }
+        public ReactiveProperty<bool> IsSettledCR { get; set; }
+        public ReactiveProperty<bool> IsSettledVL { get; set; }
+        public ReactiveProperty<bool> IsSettledVC { get; set; }
+        public ReactiveProperty<bool> IsSettledVR { get; set; }
+        public ReactiveProperty<bool> IsSettledHT { get; set; }
+        public ReactiveProperty<bool> IsSettledHM { get; set; }
+        public ReactiveProperty<bool> IsSettledHB { get; set; }
+        private ReactiveProperty<SettledPattern> SettledPattern { get; set; }
+
+        public ReactiveProperty<bool> IsThinking { get; set; }
     }
 }

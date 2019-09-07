@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\kids_chuunibyou_girl.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LivetCask.NetCore" Version="2.0.0-pre3" />
     <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0455" />
     <PackageReference Include="MaterialDesignThemes" Version="3.0.0-ci460" />
@@ -22,6 +26,25 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="QuickConverter" Version="1.2.5" />
     <PackageReference Include="ReactiveProperty" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\kids_chuunibyou_girl.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

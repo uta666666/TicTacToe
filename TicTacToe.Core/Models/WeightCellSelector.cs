@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using TicTacToe.Core.Commons;
 
@@ -47,21 +48,50 @@ namespace TicTacToe.Core.Models
          };
 
 
-        public Point? Select(IEnumerable<Point> cells)
+        public async Task<Point?> SelectAsync(IEnumerable<Point> cells)
         {
-            var selfCells = _board.GetCells(_selfType);
-            var nonSelfCells = _board.GetCells(_nonSelfType);
-            var emptyCells = _board.GetEmptyCells();
+            return await Task.Run(() =>
+            {
+                //var resultSelf = Board.CheckGameStatus(_type);
+                //if (resultSelf.Status == GameStatusByUser.Reach)
+                //{
+                //    var p = (resultSelf as ReachResult).ReachCells.Select(GetCellSelector());
+                //    if (p.HasValue)
+                //    {
+                //        return SelectCell((int)p.Value.Y, (int)p.Value.X);
+                //    }
+                //    return true;
+                //}
+
+                //var resultNonSelf = Board.CheckGameStatus(_nonSelfType);
+                //if (resultNonSelf.Status == GameStatusByUser.Reach)
+                //{
+                //    var p = (resultNonSelf as ReachResult).ReachCells.Select(GetCellSelector());
+                //    if (p.HasValue)
+                //    {
+                //        return SelectCell((int)p.Value.Y, (int)p.Value.X);
+                //    }
+                //    return true;
+                //}
+
+                //if (resultSelf.Status == GameStatusByUser.None &&
+                //    resultNonSelf.Status == GameStatusByUser.None)
+                //{
+
+                var selfCells = _board.GetCells(_selfType);
+                var nonSelfCells = _board.GetCells(_nonSelfType);
+                var emptyCells = _board.GetEmptyCells();
 
 
-            if (_selfType == CellType.Circle)
-            {
-                return GetCell(cells, _weightForFirst);
-            }
-            else
-            {
-                return GetCell(cells, _weightForSecond);
-            }
+                if (_selfType == CellType.Circle)
+                {
+                    return GetCell(cells, _weightForFirst);
+                }
+                else
+                {
+                    return GetCell(cells, _weightForSecond);
+                }
+            });
         }
 
         private Point? GetCell(IEnumerable<Point> cells, Dictionary<Point, int> weight)
@@ -77,7 +107,7 @@ namespace TicTacToe.Core.Models
                     var tempBoard = _board.Clone();
                     tempBoard.SetCellType((int)cell.Key.Y, (int)cell.Key.X, _selfType);
                     var result = tempBoard.CheckGameStatus(_selfType);
-                    if (result.Status == GameStatus.Reach)
+                    if (result.Status == GameStatusByUser.Reach)
                     {
                         if ((result as ReachResult).ReachCells.Count > reachCellCount)
                         {

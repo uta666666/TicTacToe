@@ -38,6 +38,12 @@ namespace TicTacToe.Core.Behavior
             base.OnAttached();
             AssociatedObject.Checked += AssociatedObject_Checked;
             AssociatedObject.Unchecked += AssociatedObject_Unchecked;
+            //AssociatedObject.PreviewMouseDown += AssociatedObject_PreviewMouseDown;
+        }
+
+        private void AssociatedObject_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            
         }
 
         protected override void OnDetaching()
@@ -54,6 +60,7 @@ namespace TicTacToe.Core.Behavior
 
         private void AssociatedObject_Unchecked(object sender, RoutedEventArgs e)
         {
+            
             CheckedCommand?.Execute(!IsFirst);
         }
     }

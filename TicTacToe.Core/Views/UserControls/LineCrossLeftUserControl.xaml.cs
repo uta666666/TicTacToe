@@ -1,9 +1,6 @@
-﻿using MahApps.Metro.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TicTacToe.Core
+namespace TicTacToe.Core.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// LineVerticalLeftUserControl.xaml の相互作用ロジック
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class LineCrossLeftUserControl : UserControl
     {
-        public MainWindow()
+        public LineCrossLeftUserControl()
         {
             InitializeComponent();
         }
