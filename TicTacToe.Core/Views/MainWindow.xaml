@@ -256,7 +256,7 @@
             Grid.Row="1"
             Width="400"
             Panel.ZIndex="99"
-            Source="Resources/kids_chuunibyou_girl.png"
+            Source="../Resources/kids_chuunibyou_girl.png"
             Visibility="{Binding IsThinking.Value, Converter={StaticResource BoolVisibilityConverter}}" />
 
 
