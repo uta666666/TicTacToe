@@ -13,7 +13,7 @@ namespace TicTacToe.Core.Models
     /// </summary>
     public class MinMaxFunctionSelector : ICellSelector
     {
-        public MinMaxFunctionSelector(Board board, CellType type, bool isDebug)
+        public MinMaxFunctionSelector(Board board, CellType type)
         {
             _board = board;
             _selfType = type;
@@ -30,7 +30,6 @@ namespace TicTacToe.Core.Models
                 _nonSelfType = CellType.None;
             }
 
-            _isDebug = isDebug;
             _evaluationValues = new Dictionary<Point, double>();
         }
 
@@ -38,7 +37,6 @@ namespace TicTacToe.Core.Models
         private CellType _selfType;
         private CellType _nonSelfType;
 
-        private bool _isDebug;
         private Dictionary<Point, double> _evaluationValues;
 
 

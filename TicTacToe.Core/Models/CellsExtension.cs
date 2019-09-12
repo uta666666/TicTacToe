@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace TicTacToe.Core.Models
 {
+    /// <summary>
+    /// 決着がついた場合
+    /// </summary>
     public class SettlementResult : ICheckGameStatusResult
     {
         public GameStatusByUser Status { get; } = GameStatusByUser.Settlement;
@@ -17,6 +20,9 @@ namespace TicTacToe.Core.Models
         public SettledPattern SettlementPattern { get; set; }
     }
 
+    /// <summary>
+    /// リーチがある場合
+    /// </summary>
     public class ReachResult : ICheckGameStatusResult
     {
         public GameStatusByUser Status { get; } = GameStatusByUser.Reach;
@@ -24,16 +30,27 @@ namespace TicTacToe.Core.Models
         public List<Point> ReachCells { get; set; }
     }
 
+    /// <summary>
+    /// 引き分けまたはゲーム継続
+    /// </summary>
     public class NothingResult : ICheckGameStatusResult
     {
+        public NothingResult(bool hasEmptyCells)
+        {
+            Status = hasEmptyCells ? GameStatusByUser.None : GameStatusByUser.Draw;
+        }
         public GameStatusByUser Status { get; } = GameStatusByUser.None;
     }
 
 
-
+    /// <summary>
+    /// セル選択用拡張クラス
+    /// </summary>
     public static class CellsExtension
     {
-
+        /// <summary>
+        /// 行での勝利パターン
+        /// </summary>
         private static List<KeyValuePair<SettledPattern, List<Point>>> RowVictoryPattern = new List<KeyValuePair<SettledPattern, List<Point>>>()
         {
             new KeyValuePair<SettledPattern, List<Point>>(SettledPattern.HorizontalTop, new List<Point>()
@@ -56,6 +73,9 @@ namespace TicTacToe.Core.Models
             })
         };
 
+        /// <summary>
+        /// 列での勝利パターン
+        /// </summary>
         private static List<KeyValuePair<SettledPattern, List<Point>>> ColVictoryPattern = new List<KeyValuePair<SettledPattern, List<Point>>>()
         {
             new KeyValuePair<SettledPattern, List<Point>>(SettledPattern.VerticalLeft, new List<Point>()
@@ -78,6 +98,9 @@ namespace TicTacToe.Core.Models
             })
         };
 
+        /// <summary>
+        /// 斜めでの勝利パターン
+        /// </summary>
         private static List<KeyValuePair<SettledPattern, List<Point>>> DiagVictoryPatten = new List<KeyValuePair<SettledPattern, List<Point>>>()
         {
             new KeyValuePair<SettledPattern, List<Point>>(SettledPattern.CrossLeft, new List<Point>()
@@ -126,6 +149,14 @@ namespace TicTacToe.Core.Models
             pattern = SettledPattern.None;
         }
 
+        /// <summary>
+        /// ゲームの勝者を返す　詳細ロジック
+        /// 商社を判断するだけなので、細かいチェックはしない
+        /// </summary>
+        /// <param name="cells"></param>
+        /// <param name="checkPattern"></param>
+        /// <param name="status"></param>
+        /// <param name="pattern"></param>
         private static void GetGameStatus(Cell[,] cells, List<KeyValuePair<SettledPattern, List<Point>>> checkPattern, out GameStatus status, out SettledPattern pattern)
         {
             foreach (var row in checkPattern)
@@ -158,8 +189,9 @@ namespace TicTacToe.Core.Models
         /// </summary>
         /// <param name="cells"></param>
         /// <param name="type"></param>
+        /// <param name="hasEmptyCells"></param>
         /// <returns></returns>
-        public static ICheckGameStatusResult GetGameStatus(this Cell[,] cells, CellType type)
+        public static ICheckGameStatusResult GetGameStatus(this Cell[,] cells, CellType type, bool hasEmptyCells)
         {
             List<ICheckGameStatusResult> resultList = new List<ICheckGameStatusResult>();
 
@@ -194,9 +226,17 @@ namespace TicTacToe.Core.Models
                 };
             }
 
-            return new NothingResult();
+            return new NothingResult(hasEmptyCells);
         }
 
+        /// <summary>
+        /// 指定されたマークのゲームの状態を返す　詳細ロジック
+        /// 勝ち、リーチ、引き分け、ゲーム継続を判断する
+        /// </summary>
+        /// <param name="cells"></param>
+        /// <param name="type"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
         private static ICheckGameStatusResult GetGameStatus(Cell[,] cells, CellType type, List<KeyValuePair<SettledPattern, List<Point>>> pattern)
         {
             List<Point> reachCells = new List<Point>();
@@ -237,24 +277,24 @@ namespace TicTacToe.Core.Models
             }
             else
             {
-                return new NothingResult();
+                return new NothingResult(false);
             }
         }
 
 
-        /// <summary>
-        /// セルを選択する
-        /// </summary>
-        /// <param name="cells"></param>
-        /// <param name="selector"></param>
-        /// <returns></returns>
-        public static async Task<Point?> SelectAsync(this IEnumerable<Point> cells, ICellSelector selector)
-        {
-            if (!cells.Any())
-            {
-                return null;
-            }
-            return await selector.SelectAsync(cells);
-        }
+        ///// <summary>
+        ///// セルを選択する
+        ///// </summary>
+        ///// <param name="cells"></param>
+        ///// <param name="selector"></param>
+        ///// <returns></returns>
+        //public static async Task<Point?> SelectAsync(this IEnumerable<Point> cells, ICellSelector selector)
+        //{
+        //    if (!cells.Any())
+        //    {
+        //        return null;
+        //    }
+        //    return await selector.SelectAsync(cells);
+        //}
     }
 }

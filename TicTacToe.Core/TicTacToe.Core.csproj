@@ -15,6 +15,12 @@
 
   <ItemGroup>
     <None Remove="Resources\kids_chuunibyou_girl.png" />
+    <None Remove="Resources\lower_a.png" />
+    <None Remove="Resources\lower_d.png" />
+    <None Remove="Resources\lower_r.png" />
+    <None Remove="Resources\lower_w.png" />
+    <None Remove="Resources\pose_lose_boy.png" />
+    <None Remove="Resources\pose_win_boy.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +36,12 @@
 
   <ItemGroup>
     <Resource Include="Resources\kids_chuunibyou_girl.png" />
+    <Resource Include="Resources\lower_a.png" />
+    <Resource Include="Resources\lower_d.png" />
+    <Resource Include="Resources\lower_r.png" />
+    <Resource Include="Resources\lower_w.png" />
+    <Resource Include="Resources\pose_lose_boy.png" />
+    <Resource Include="Resources\pose_win_boy.png" />
   </ItemGroup>
 
   <ItemGroup>

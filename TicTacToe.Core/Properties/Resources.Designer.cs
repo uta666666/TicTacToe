@@ -69,5 +69,65 @@ namespace TicTacToe.Core.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] lower_a {
+            get {
+                object obj = ResourceManager.GetObject("lower_a", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] lower_d {
+            get {
+                object obj = ResourceManager.GetObject("lower_d", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] lower_r {
+            get {
+                object obj = ResourceManager.GetObject("lower_r", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] lower_w {
+            get {
+                object obj = ResourceManager.GetObject("lower_w", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] pose_lose_boy {
+            get {
+                object obj = ResourceManager.GetObject("pose_lose_boy", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Byte[] のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static byte[] pose_win_boy {
+            get {
+                object obj = ResourceManager.GetObject("pose_win_boy", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

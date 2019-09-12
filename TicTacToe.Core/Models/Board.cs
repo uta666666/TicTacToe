@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using TicTacToe.Core.Commons;
+using System.Linq;
 
 namespace TicTacToe.Core.Models
 {
@@ -98,7 +99,7 @@ namespace TicTacToe.Core.Models
 
         public ICheckGameStatusResult CheckGameStatus(CellType type)
         {
-            return Cells.GetGameStatus(type);
+            return Cells.GetGameStatus(type, GetEmptyCells().Any());
         }
 
         public void ChangeCellColorForWin(SettlementResult result)

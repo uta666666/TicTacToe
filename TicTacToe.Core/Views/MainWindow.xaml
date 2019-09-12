@@ -10,11 +10,10 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:qc="http://QuickConverter.CodePlex.com/"
-    xmlns:uc="clr-namespace:TicTacToe.Core.Views.UserControls"
     xmlns:vm="clr-namespace:TicTacToe.Core.ViewModels"
     Title="Tic-Tac-Toe"
     Width="800"
-    Height="900"
+    Height="950"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
     ResizeMode="CanMinimize"
@@ -69,8 +68,8 @@
 
             <Style x:Key="LineCrossLeftStyle" TargetType="{x:Type Line}">
                 <Style.Setters>
-                    <Setter Property="Opacity" Value="0.7" />
-                    <Setter Property="Stroke" Value="Yellow" />
+                    <Setter Property="Opacity" Value="0.8" />
+                    <Setter Property="Stroke" Value="GreenYellow" />
                     <Setter Property="StrokeThickness" Value="60" />
                 </Style.Setters>
                 <Style.Triggers>
@@ -97,8 +96,8 @@
 
             <Style x:Key="LineCrossRightStyle" TargetType="{x:Type Line}">
                 <Style.Setters>
-                    <Setter Property="Opacity" Value="0.7" />
-                    <Setter Property="Stroke" Value="Yellow" />
+                    <Setter Property="Opacity" Value="0.8" />
+                    <Setter Property="Stroke" Value="GreenYellow" />
                     <Setter Property="StrokeThickness" Value="60" />
                 </Style.Setters>
                 <Style.Triggers>
@@ -125,8 +124,8 @@
 
             <Style x:Key="LineVerticalStyle" TargetType="{x:Type Line}">
                 <Style.Setters>
-                    <Setter Property="Opacity" Value="0.7" />
-                    <Setter Property="Stroke" Value="Yellow" />
+                    <Setter Property="Opacity" Value="0.8" />
+                    <Setter Property="Stroke" Value="GreenYellow" />
                     <Setter Property="StrokeThickness" Value="60" />
                 </Style.Setters>
                 <Style.Triggers>
@@ -148,8 +147,8 @@
 
             <Style x:Key="LineHorizontalStyle" TargetType="{x:Type Line}">
                 <Style.Setters>
-                    <Setter Property="Opacity" Value="0.7" />
-                    <Setter Property="Stroke" Value="Yellow" />
+                    <Setter Property="Opacity" Value="0.8" />
+                    <Setter Property="Stroke" Value="GreenYellow" />
                     <Setter Property="StrokeThickness" Value="60" />
                 </Style.Setters>
                 <Style.Triggers>
@@ -172,7 +171,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineCrossLeftStyle}"
             Visibility="{Binding IsSettledCL.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="130"
@@ -182,7 +181,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineCrossRightStyle}"
             Visibility="{Binding IsSettledCR.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="660"
@@ -192,7 +191,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineVerticalStyle}"
             Visibility="{Binding IsSettledVL.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="140"
@@ -202,7 +201,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineVerticalStyle}"
             Visibility="{Binding IsSettledVC.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="398"
@@ -212,7 +211,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineVerticalStyle}"
             Visibility="{Binding IsSettledVR.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="660"
@@ -222,7 +221,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineHorizontalStyle}"
             Visibility="{Binding IsSettledHT.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="130"
@@ -232,7 +231,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineHorizontalStyle}"
             Visibility="{Binding IsSettledHM.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="130"
@@ -242,7 +241,7 @@
 
         <Line
             Grid.Row="1"
-            Panel.ZIndex="99"
+            Panel.ZIndex="98"
             Style="{StaticResource LineHorizontalStyle}"
             Visibility="{Binding IsSettledHB.Value, Converter={StaticResource BoolVisibilityConverter}}"
             X1="130"
@@ -257,8 +256,120 @@
             Width="400"
             Panel.ZIndex="99"
             Source="../Resources/kids_chuunibyou_girl.png"
-            Visibility="{Binding IsThinking.Value, Converter={StaticResource BoolVisibilityConverter}}" />
+            Visibility="{Binding IsDispWaitingImg.Value, Converter={StaticResource BoolVisibilityConverter}}">
+            <Image.Effect>
+                <DropShadowEffect
+                    BlurRadius="30"
+                    Direction="315"
+                    ShadowDepth="10"
+                    Color="MidnightBlue" />
+            </Image.Effect>
+        </Image>
 
+        <!--  勝利画像  -->
+        <Button
+            Grid.Row="1"
+            Width="400"
+            Height="400"
+            Panel.ZIndex="99"
+            Command="{Binding ResetCommand}"
+            Style="{StaticResource MaterialDesignToolButton}"
+            Visibility="{Binding IsYouWin.Value, Converter={StaticResource BoolVisibilityConverter}}">
+            <Image Width="400" Source="../Resources/pose_win_boy.png">
+                <Image.Effect>
+                    <DropShadowEffect
+                        BlurRadius="30"
+                        Direction="315"
+                        ShadowDepth="10"
+                        Color="MidnightBlue" />
+                </Image.Effect>
+            </Image>
+        </Button>
+
+        <!--  負け画像  -->
+        <Button
+            Grid.Row="1"
+            Width="400"
+            Height="400"
+            Panel.ZIndex="99"
+            Command="{Binding ResetCommand}"
+            Style="{StaticResource MaterialDesignToolButton}"
+            Visibility="{Binding IsYouLose.Value, Converter={StaticResource BoolVisibilityConverter}}">
+            <Image Width="400" Source="../Resources/pose_lose_boy.png">
+                <Image.Effect>
+                    <DropShadowEffect
+                        BlurRadius="30"
+                        Direction="315"
+                        ShadowDepth="10"
+                        Color="MidnightBlue" />
+                </Image.Effect>
+            </Image>
+        </Button>
+
+        <!--  引き分け画像  -->
+        <Button
+            Grid.Row="1"
+            Width="400"
+            Height="400"
+            Panel.ZIndex="99"
+            Command="{Binding ResetCommand}"
+            Style="{StaticResource MaterialDesignToolButton}"
+            Visibility="{Binding IsDraw.Value, Converter={StaticResource BoolVisibilityConverter}}">
+            <StackPanel
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Image
+                    Width="80"
+                    Margin="-10"
+                    Source="../Resources/lower_d.png">
+                    <Image.Effect>
+                        <DropShadowEffect
+                            BlurRadius="30"
+                            Direction="315"
+                            ShadowDepth="10"
+                            Color="MidnightBlue" />
+                    </Image.Effect>
+                </Image>
+                <Image
+                    Width="80"
+                    Margin="-10"
+                    Source="../Resources/lower_r.png">
+                    <Image.Effect>
+                        <DropShadowEffect
+                            BlurRadius="30"
+                            Direction="315"
+                            ShadowDepth="10"
+                            Color="MidnightBlue" />
+                    </Image.Effect>
+                </Image>
+                <Image
+                    Width="80"
+                    Margin="-10"
+                    Source="../Resources/lower_a.png">
+                    <Image.Effect>
+                        <DropShadowEffect
+                            BlurRadius="30"
+                            Direction="315"
+                            ShadowDepth="10"
+                            Color="MidnightBlue" />
+                    </Image.Effect>
+                </Image>
+                <Image
+                    Width="80"
+                    Margin="-10"
+                    Source="../Resources/lower_w.png">
+                    <Image.Effect>
+                        <DropShadowEffect
+                            BlurRadius="30"
+                            Direction="315"
+                            ShadowDepth="10"
+                            Color="MidnightBlue" />
+                    </Image.Effect>
+                </Image>
+            </StackPanel>
+        </Button>
 
         <!--  メインのコントロール  -->
         <Grid Grid.Row="0">
@@ -268,7 +379,9 @@
             </Grid.ColumnDefinitions>
             <StackPanel
                 Grid.Column="0"
+                Margin="0,30,0,0"
                 HorizontalAlignment="Right"
+                VerticalAlignment="Top"
                 Orientation="Horizontal">
                 <ToggleButton
                     Width="60"
@@ -305,7 +418,9 @@
             </StackPanel>
             <StackPanel
                 Grid.Column="1"
+                Margin="0,30,0,0"
                 HorizontalAlignment="Left"
+                VerticalAlignment="Top"
                 Orientation="Horizontal">
                 <ToggleButton
                     Width="60"
@@ -359,7 +474,6 @@
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
-
             <Border Grid.Row="0" Grid.Column="0">
                 <Button
                     Width="Auto"
@@ -376,6 +490,7 @@
                     Style="{StaticResource MaterialDesignRaisedButton}"
                     Tag="0:0" />
             </Border>
+
             <Border Grid.Row="0" Grid.Column="1">
                 <Button
                     Width="Auto"

@@ -30,6 +30,10 @@ namespace TicTacToe.Core.Commons
         /// </summary>
         Reach = 1,
         /// <summary>
+        /// 引き分け
+        /// </summary>
+        Draw = 3,
+        /// <summary>
         /// 何もなし
         /// </summary>
         None = 0

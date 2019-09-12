@@ -121,4 +121,22 @@
   <data name="kids_chuunibyou_girl" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\kids_chuunibyou_girl.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="lower_a" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lower_a.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lower_d" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lower_d.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lower_r" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lower_r.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lower_w" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lower_w.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pose_lose_boy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pose_lose_boy.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pose_win_boy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pose_win_boy.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
