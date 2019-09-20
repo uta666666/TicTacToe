@@ -102,8 +102,8 @@ namespace TicTacToe.Core.ViewModels
             IsSettledHM = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == SettledPattern.HorizontalMiddle).ToReactiveProperty();
             IsSettledHB = _board.ObserveProperty(n => n.SettledPattern).Select(n => n == SettledPattern.HorizontalBottom).ToReactiveProperty();
 
-            IsYouWin = IsFirstPlayer.CombineLatest(IsWinPlayer1, (x, y) => x ? y : !y).CombineLatest(IsSettled, (x, y) => x && y).ToReactiveProperty();
-            IsYouLose = IsFirstPlayer.CombineLatest(IsWinPlayer2, (x, y) => x ? y : !y).CombineLatest(IsSettled, (x, y) => x && y).Delay(DateTimeOffset.FromUnixTimeSeconds(3)).ToReactiveProperty();
+            IsYouWin = IsFirstPlayer.CombineLatest(IsWinPlayer1, (x, y) => x ? y : !y).CombineLatest(IsSettled, (x, y) => x && y).Delay(TimeSpan.FromSeconds(1)).ToReactiveProperty();
+            IsYouLose = IsFirstPlayer.CombineLatest(IsWinPlayer2, (x, y) => x ? y : !y).CombineLatest(IsSettled, (x, y) => x && y).Delay(TimeSpan.FromSeconds(1)).ToReactiveProperty();
             IsDraw = new ReactiveProperty<bool>(false);
         }
 
