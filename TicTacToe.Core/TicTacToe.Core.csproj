@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\AlphaBetaForBitBordFunctionSelector .cs" />
+    <Compile Remove="Models\BitBoard.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\kids_chuunibyou_girl.png" />
     <None Remove="Resources\lower_a.png" />
     <None Remove="Resources\lower_d.png" />

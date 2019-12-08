@@ -328,3 +328,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/TicTacToe.Core/Models/AlphaBetaForBitBordFunctionSelector .cs
+/TicTacToe.Core/Models/BitBoard.cs
